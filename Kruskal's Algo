@@ -1,0 +1,57 @@
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class DSU {
+    vector<int> parent, rank;
+public:
+    DSU(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+
+    bool unite(int x, int y) {
+        int px = find(x);
+        int py = find(y);
+        if (px == py) return false;
+
+        if (rank[px] < rank[py]) parent[px] = py;
+        else if (rank[py] < rank[px]) parent[py] = px;
+        else {
+            parent[py] = px;
+            rank[px]++;
+        }
+        return true;
+    }
+};
+
+int minimumSpanningTree(vector<vector<int>>& edges, int n)
+{
+    // Sort edges by weight (explicit type, C++11 compatible)
+    sort(edges.begin(), edges.end(), [](vector<int> &a, vector<int> &b) {
+        return a[2] < b[2];
+    });
+
+    DSU dsu(n);
+    int mstWeight = 0, count = 0;
+
+    for (int i = 0; i < edges.size(); i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        int w = edges[i][2];
+
+        if (dsu.unite(u, v)) {
+            mstWeight += w;
+            count++;
+            if (count == n - 1) break; // MST complete
+        }
+    }
+
+    return mstWeight;
+}
