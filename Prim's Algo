@@ -1,6 +1,8 @@
+#include<iostream>
 #include<list>
 #include<limits.h>
 #include<unordered_map>
+using namespace std;
 
 vector<pair<pair<int, int>, int>> calculatePrimsMST(int n, int m, vector<pair<pair<int, int>, int>> &g){
     unordered_map<int,list<pair<int,int>>>adj;
